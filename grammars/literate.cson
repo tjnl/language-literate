@@ -1,15 +1,117 @@
-scopeName: 'source.gfm.literate'
+scopeName: 'source.literate'
 name: 'Literate'
 fileTypes: [ 'lit' ]
 limitLineLength: false
 
 patterns: [
   {
-    comment: 'CSS files'
-  	match: '^(@add_css|@overwrite_css|@colorscheme) (.+\\.(?i:css))$'
-  	captures:
-  	  0: name: 'meta.at-rule.import.css.literate'
-  	  1: name: 'entity.name.tag.literate'
-  	  2: name: 'entity.name.tag.literate'
+    comment: 'book keyword'
+    match: '^@book$'
+    name: 'keyword.literate'
   }
-]
+
+  {
+    comment: 'title keyword'
+    match: '^(@title)(.*)'
+    captures:
+      0: name: 'meta.name.section.literate'
+      1: name: 'keyword.literate'
+      2: name: 'markup.heading.literate'
+  }
+
+  {
+    comment: 'code type keyword'
+    match: '(@code_type)([ \t]*?)([^ \t]+)([ \t]*?)(\\.[^ \t]+)'
+    captures:
+      0: name: 'meta.declaration.literate'
+      1: name: 'keyword.literate'
+      3: name: 'string.unquoted.literate'
+      5: name: 'string.unquoted.literate'
+  }
+
+  {
+    comment: 'comment format line'
+    name: 'meta.declaration.literate'
+    contentName: 'string.unquoted.literate'
+    begin: '^(@comment_type)'
+    beginCaptures:
+      1: name: 'keyword.literate'
+    end: '$'
+  patterns: [{ include: '#sectionVariable' }]
+  }
+
+  {
+    comment: 'section keyword'
+    match: '^(@s)(.*)'
+    captures:
+      0: name: 'meta.name.section.literate'
+      1: name: 'keyword.literate'
+      2: name: 'entity.name.section.other.literate'
+  }
+
+  {
+    comment: 'include a file'
+    match: '^(@add_css|@overwrite_css|@colorscheme|@include|@change)([ \t]+?)([^ \\\\]*)'
+    captures:
+      0: name: 'meta.declaration.literate'
+      1: name: 'keyword.literate'
+      3: name: 'string.unquoted.literate'
+  }
+
+  {
+    comment: 'error_format line'
+    name: 'meta.declaration.literate'
+    contentName: 'string.unquoted.literate'
+    begin: '^(@error_format)'
+    beginCaptures:
+      1: name: 'keyword.literate'
+    end: '$'
+  patterns: [{ include: '#percentVariable' }]
+  }
+
+  {
+    comment: 'compiler declaration'
+    name: 'meta.declaration.literate'
+    match: '^(@compiler)(.+)'
+    captures:
+      1: name: 'keyword.literate'
+      2: patterns: [
+        { include: '#compilerOption' }
+        { include: '#compilerOperator' }
+        { include: '#compilerFunction' }
+      ]
+  }
+
+  {
+    comment: 'Chapter description and chapter link for @book'
+    match: '^[ \t]*?(\\[)(.*?)(\\])(\\()(.+)(\\))'
+    captures:
+      0: name: 'entity.name.section.other.literate'
+      1: name: 'punctuation.definition.begin.literate'
+      3: name: 'punctuation.definition.end.literate'
+      4: name: 'punctuation.definition.begin.literate'
+      5: name: 'string.unquoted.literate'
+      6: name: 'punctuation.definition.end.literate'
+  }
+
+repository:
+  percentVariable: {
+    name: 'variable.language.literate'
+    match: '%[lms]'
+  }
+  sectionVariable: {
+    name: 'variable.language.literate'
+    match: '%s'
+  }
+  compilerOption: {
+    name: 'entity.other.attribute-name'
+    match: '-{1,2}[a-zA-Z]+'
+  }
+  compilerOperator: {
+    name: 'keyword.operator'
+    match: '&&'
+  }
+  compilerFunction: {
+    name: 'entity.name.function'
+    match: '(?<= |\\t)[a-zA-Z]+(?= |\\t)'
+  }
