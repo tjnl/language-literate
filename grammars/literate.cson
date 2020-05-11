@@ -1,0 +1,15 @@
+scopeName: 'source.gfm.literate'
+name: 'Literate'
+fileTypes: [ 'lit' ]
+limitLineLength: false
+
+patterns: [
+  {
+    comment: 'CSS files'
+  	match: '^(@add_css|@overwrite_css|@colorscheme) (.+\\.(?i:css))$'
+  	captures:
+  	  0: name: 'meta.at-rule.import.css.literate'
+  	  1: name: 'entity.name.tag.literate'
+  	  2: name: 'entity.name.tag.literate'
+  }
+]
