@@ -1,6 +1,6 @@
 {
   "name": "language-literate",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "A language grammar package for the Literate programming tool",
   "keywords": [
     "syntax",

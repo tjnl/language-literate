@@ -4,13 +4,64 @@ fileTypes: [ 'lit' ]
 limitLineLength: false
 
 patterns: [
-  {
+  { include: '#bookKeyword' }
+  { include: '#titleKeyword' }
+  { include: '#codeTypeKeyword' }
+  { include: '#commentFormat' }
+  { include: '#sectionKeyword' }
+  { include: '#includeKeyword' }
+  { include: '#errorFormatKeyword' }
+  { include: '#compilerDeclarationKeyword' }
+  { include: '#bookChapter' }
+  { include: '#codeBlock' }
+  { include: '#changeBlock' }
+  # { include: 'source.gfm'} # GitHub-Flavored MarkDown formatting
+]
+
+repository:
+
+  changeBlock : {
+    comment: 'Change file'
+    name: 'meta.block.literate'
+    begin: '^(@change)([ \\t]+?)([^ \\\\]*)$'
+    beginCaptures:
+      1: name: 'keyword.literate'
+      3: name: 'string.unquoted.literate'
+    end: '^@change_end$'
+    endCaptures:
+      0: name: 'keyword.literate'
+    patterns: [
+      { include: '#changeKeyword' }
+      { include: '$self' }
+    ]
+  }
+
+
+  codeBlock: {
+    comment: 'Code Block'
+    name: 'meta.embedded.block.literate'
+    begin: '^(---) (.+)$'
+    beginCaptures:
+      1: name: 'punctuation.definition.string.begin.literate'
+      2:
+        name: 'entity.name.section.other.literate'
+        patterns: [{ include: '#codeBlockModifier' }]
+    end: '^(---)$'
+    endCaptures:
+      1: name: 'punctuation.definition.string.end.literate'
+    patterns: [
+      { include: 'source.c' }
+      { include: '#sectionReference' }
+    ]
+  }
+
+  bookKeyword: {
     comment: 'book keyword'
     match: '^@book$'
     name: 'keyword.literate'
   }
 
-  {
+  titleKeyword: {
     comment: 'title keyword'
     match: '^(@title)(.*)'
     captures:
@@ -19,9 +70,9 @@ patterns: [
       2: name: 'markup.heading.literate'
   }
 
-  {
+  codeTypeKeyword: {
     comment: 'code type keyword'
-    match: '(@code_type)([ \t]*?)([^ \t]+)([ \t]*?)(\\.[^ \t]+)'
+    match: '(@code_type)([ \\t]*?)([^ \\t]+)([ \\t]*?)(\\.[^ \\t]+)'
     captures:
       0: name: 'meta.declaration.literate'
       1: name: 'keyword.literate'
@@ -29,7 +80,7 @@ patterns: [
       5: name: 'string.unquoted.literate'
   }
 
-  {
+  commentFormat: {
     comment: 'comment format line'
     name: 'meta.declaration.literate'
     contentName: 'string.unquoted.literate'
@@ -37,10 +88,10 @@ patterns: [
     beginCaptures:
       1: name: 'keyword.literate'
     end: '$'
-  patterns: [{ include: '#sectionVariable' }]
+    patterns: [{ include: '#sectionVariable' }]
   }
 
-  {
+  sectionKeyword: {
     comment: 'section keyword'
     match: '^(@s)(.*)'
     captures:
@@ -49,16 +100,16 @@ patterns: [
       2: name: 'entity.name.section.other.literate'
   }
 
-  {
+  includeKeyword: {
     comment: 'include a file'
-    match: '^(@add_css|@overwrite_css|@colorscheme|@include|@change)([ \t]+?)([^ \\\\]*)'
+    match: '^(@add_css|@overwrite_css|@colorscheme|@include)([ \\t]+?)([^ \\\\]*)'
     captures:
       0: name: 'meta.declaration.literate'
       1: name: 'keyword.literate'
       3: name: 'string.unquoted.literate'
   }
 
-  {
+  errorFormatKeyword: {
     comment: 'error_format line'
     name: 'meta.declaration.literate'
     contentName: 'string.unquoted.literate'
@@ -66,25 +117,27 @@ patterns: [
     beginCaptures:
       1: name: 'keyword.literate'
     end: '$'
-  patterns: [{ include: '#percentVariable' }]
+    patterns: [{ include: '#percentVariable' }]
   }
 
-  {
+  compilerDeclarationKeyword: {
     comment: 'compiler declaration'
     name: 'meta.declaration.literate'
-    match: '^(@compiler)(.+)'
-    captures:
+    contentName: 'string.unquoted.literate'
+    begin: '^(@compiler)'
+    beginCaptures:
       1: name: 'keyword.literate'
-      2: patterns: [
-        { include: '#compilerOption' }
-        { include: '#compilerOperator' }
-        { include: '#compilerFunction' }
-      ]
+    end: '$'
+    patterns: [
+      { include: '#compilerOption' }
+      { include: '#compilerOperator' }
+      { include: '#compilerFunction' }
+    ]
   }
 
-  {
+  bookChapter: {
     comment: 'Chapter description and chapter link for @book'
-    match: '^[ \t]*?(\\[)(.*?)(\\])(\\()(.+)(\\))'
+    match: '^[ \\t]*?(\\[)(.*?)(\\])(\\()(.+)(\\))'
     captures:
       0: name: 'entity.name.section.other.literate'
       1: name: 'punctuation.definition.begin.literate'
@@ -94,7 +147,6 @@ patterns: [
       6: name: 'punctuation.definition.end.literate'
   }
 
-repository:
   percentVariable: {
     name: 'variable.language.literate'
     match: '%[lms]'
@@ -114,4 +166,23 @@ repository:
   compilerFunction: {
     name: 'entity.name.function'
     match: '(?<= |\\t)[a-zA-Z]+(?= |\\t)'
+  }
+  sectionReference: {
+    comment: 'section reference within code block'
+    match: '(@)(\\{)(.+)(\\})'
+    captures:
+      1: name: 'keyword.literate'
+      2: name: 'punctuation.definition.begin.literate'
+      3: name: 'entity.name.section.other.literate'
+      4: name: 'punctuation.definition.end.literate'
+  }
+  codeBlockModifier: {
+    comment: 'testing for code block'
+    match: '(---)? (noWeave|[\\:\\+]=)$'
+    name: 'entity.other.attribute-name'
+  }
+  changeKeyword: {
+    comment: 'for inclusion in @change blocks'
+    match: '^(@replace|@with|@end)$'
+    name: 'keyword.other.literate'
   }
