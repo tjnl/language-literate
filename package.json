@@ -1,5 +1,5 @@
 {
-  "name": "language-literate",
+  "name": "language-literate-scheme",
   "version": "0.1.0",
   "description": "A language grammar package for the Literate programming tool for use with Scheme",
   "keywords": [
