@@ -1,19 +1,20 @@
 {
   "name": "language-literate",
   "version": "0.1.0",
-  "description": "A language grammar package for the Literate programming tool",
+  "description": "A language grammar package for the Literate programming tool for use with Scheme",
   "keywords": [
     "syntax",
     "highlighting",
     "grammar",
-    "literate"
+    "literate",
+    "scheme"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/tjnl/language-literate"
+    "url": "https://github.com/tjnl/language-literate-scheme"
   },
   "bugs": {
-    "url": "https://github.com/tjnl/language-literate/issues"
+    "url": "https://github.com/tjnl/language-literate-scheme/issues"
   },
   "license": "GPL-3.0",
   "engines": {

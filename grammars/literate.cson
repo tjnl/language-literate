@@ -50,7 +50,7 @@ repository:
     endCaptures:
       1: name: 'punctuation.definition.string.end.literate'
     patterns: [
-      { include: 'source.c' }
+      { include: 'source.scheme' }
       { include: '#sectionReference' }
     ]
   }
